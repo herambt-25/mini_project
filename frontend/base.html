@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ t('app_title') }}</title>
+    
+    <!-- Link language theme styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+    
+    <style>
+        body { 
+            background-color: #f4f7f6; 
+            margin: 0; 
+            padding: 0; 
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+        
+        header { 
+            background-color: var(--primary-color, #004d99); 
+            color: white; 
+            padding: 1rem 2rem; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Language Switcher Styling */
+        .lang-switcher {
+            display: flex;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px;
+            border-radius: 6px;
+        }
+
+        .lang-btn {
+            color: white;
+            text-decoration: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .lang-btn.active {
+            background-color: white;
+            color: var(--primary-color, #004d99);
+        }
+
+        main { 
+            max-width: 1000px; 
+            margin: 30px auto; 
+            padding: 0 20px; 
+            min-height: 70vh;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #e9ecef;
+            color: #6c757d;
+            font-size: 14px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body class="theme-{{ current_lang }}">
+
+    <header>
+        <h1>{{ t('app_title') }}</h1>
+        
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <nav class="nav-links">
+                <a href="/">{{ t('home') }}</a>
+                <a href="/profile">{{ t('profile') }}</a>
+                <a href="/dashboard">{{ t('dashboard') }}</a>
+                <a href="/schemes">{{ t('schemes') }}</a>
+            </nav>
+
+            <!-- Language Selection Switcher -->
+            <div class="lang-switcher">
+                <a href="/set_language/en" class="lang-btn {% if current_lang == 'en' %}active{% endif %}">EN</a>
+                <a href="/set_language/hi" class="lang-btn {% if current_lang == 'hi' %}active{% endif %}">हिंदी</a>
+                <a href="/set_language/mr" class="lang-btn {% if current_lang == 'mr' %}active{% endif %}">मराठी</a>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; {{ t('footer_text') }}</p>
+    </footer>
+
+</body>
+</html>

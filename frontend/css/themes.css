@@ -1,0 +1,25 @@
+/* Language-Specific UI Themes */
+
+/* English Theme - Deep Civic Blue */
+body.theme-en {
+    --primary-color: #004d99;
+    --primary-hover: #003366;
+    --accent-color: #e6f2ff;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Hindi Theme - Warm Saffron-Navy Accent */
+body.theme-hi {
+    --primary-color: #0b3c5d;
+    --primary-hover: #1d2731;
+    --accent-color: #fff3e0;
+    font-family: 'Noto Sans Devanagari', 'Mukta', 'Segoe UI', sans-serif;
+}
+
+/* Marathi Theme - Royal Emerald Accent */
+body.theme-mr {
+    --primary-color: #1b4332;
+    --primary-hover: #081c15;
+    --accent-color: #e8f5e9;
+    font-family: 'Noto Sans Devanagari', 'Kohinoor Devanagari', 'Segoe UI', sans-serif;
+}

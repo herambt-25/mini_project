@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 30px;">
+    <h2>Welcome, {{ user.name }}</h2>
+    <p>Based on your profile (Age: {{ user.age }}, State: {{ user.state }}, Income: ₹{{ user.annual_income }}), here is your eligibility report.</p>
+</div>
+
+<div style="display: flex; gap: 20px;">
+    
+    <!-- ELIGIBLE SCHEMES COLUMN -->
+    <div style="flex: 1;">
+        <h3 style="color: #28a745;">✅ Eligible Schemes ({{ eligible_schemes|length }})</h3>
+        
+        {% for item in eligible_schemes %}
+        <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 5px solid #28a745; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h4 style="margin-top: 0; color: #004d99;">{{ item.scheme.name_en }}</h4>
+            <p style="font-size: 14px; color: #555;">{{ item.scheme.description_en }}</p>
+            <p><strong>Benefits:</strong> {{ item.scheme.benefits_en }}</p>
+            
+            <div style="background-color: #f8f9fa; padding: 10px; border-radius: 5px; font-size: 13px;">
+                <strong>Why you are eligible:</strong><br>
+                {% for reason in item.reasons %}
+                    <span style="color: #28a745; display: block;">{{ reason }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <p>No eligible schemes found for this profile.</p>
+        {% endfor %}
+    </div>
+
+    <!-- INELIGIBLE SCHEMES COLUMN -->
+    <div style="flex: 1;">
+        <h3 style="color: #dc3545;">❌ Not Eligible ({{ ineligible_schemes|length }})</h3>
+        
+        {% for item in ineligible_schemes %}
+        <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 5px solid #dc3545; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h4 style="margin-top: 0; color: #555;">{{ item.scheme.name_en }}</h4>
+            
+            <div style="background-color: #fff3f3; padding: 10px; border-radius: 5px; font-size: 13px;">
+                <strong>Reasons:</strong><br>
+                {% for reason in item.reasons %}
+                    {% if '✗' in reason %}
+                        <span style="color: #dc3545; display: block; font-weight: bold;">{{ reason }}</span>
+                    {% else %}
+                        <span style="color: #28a745; display: block;">{{ reason }}</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

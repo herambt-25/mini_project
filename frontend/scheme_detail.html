@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    
+    <a href="/schemes" style="color: #004d99; text-decoration: none;">&larr; Back to all schemes</a>
+    
+    <h2 style="color: #004d99; margin-top: 20px;">{{ scheme.name_en }}</h2>
+    <p style="font-size: 16px; color: #555;">{{ scheme.description_en }}</p>
+    
+    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+        <h4 style="margin-top: 0;">Eligibility Criteria</h4>
+        <ul style="line-height: 1.8;">
+            <li><strong>Age Requirement:</strong> {{ scheme.min_age }} to {{ scheme.max_age }} years</li>
+            <li><strong>Income Limit:</strong> {% if scheme.max_income == 0 %}No limit{% else %}Up to ₹{{ scheme.max_income }}{% endif %}</li>
+            <li><strong>State:</strong> {{ scheme.state_applicability }}</li>
+            <li><strong>Target Gender:</strong> {{ scheme.target_gender }}</li>
+            <li><strong>Target Occupation:</strong> {{ scheme.target_occupation }}</li>
+        </ul>
+    </div>
+
+    <div style="margin: 20px 0;">
+        <h4>Benefits</h4>
+        <p style="background-color: #e6f2ff; padding: 15px; border-left: 4px solid #004d99; border-radius: 4px;">
+            {{ scheme.benefits_en }}
+        </p>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+    
+    <p><strong>Ministry/Department:</strong> {{ scheme.ministry }}</p>
+    
+    <div style="margin-top: 30px;">
+        <a href="{{ scheme.official_source }}" target="_blank" style="background-color: #28a745; color: white; text-decoration: none; padding: 12px 24px; border-radius: 5px; font-weight: bold;">
+            Visit Official Website
+        </a>
+    </div>
+
+</div>
+{% endblock %}

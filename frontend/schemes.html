@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <h2>All Government Schemes</h2>
+    <p>Browse our complete catalog of available government schemes and subsidies.</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+    {% for scheme in schemes %}
+    <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; flex-direction: column;">
+        
+        <span style="background-color: #e9ecef; color: #495057; padding: 4px 8px; border-radius: 4px; font-size: 12px; align-self: flex-start; margin-bottom: 10px;">
+            {{ scheme.category }}
+        </span>
+        
+        <h3 style="margin-top: 0; color: #004d99; font-size: 18px;">{{ scheme.name_en }}</h3>
+        <p style="font-size: 14px; color: #555; flex-grow: 1;">{{ scheme.description_en }}</p>
+        
+        <a href="/scheme/{{ scheme.id }}" style="display: block; text-align: center; background-color: #004d99; color: white; text-decoration: none; padding: 10px; border-radius: 4px; margin-top: 15px;">
+            View Details
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
