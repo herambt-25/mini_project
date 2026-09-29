@@ -90,12 +90,13 @@
         
         <div style="display: flex; align-items: center; gap: 20px;">
             <nav class="nav-links">
-                <a href="/">{{ t('home') }}</a>
-                <a href="/profile">{{ t('profile') }}</a>
-                <a href="/dashboard">{{ t('dashboard') }}</a>
-                <a href="/schemes">{{ t('schemes') }}</a>
-            </nav>
-
+    <a href="/">{{ t('home') }}</a>
+    <a href="/profile">{{ t('profile') }}</a>
+    <a href="/dashboard">{{ t('dashboard') }}</a>
+    <a href="/schemes">{{ t('schemes') }}</a>
+    <a href="/compare">Compare</a>
+    <a href="/simulator" style="color: #ffc107;">Simulator</a>
+</nav>
             <!-- Language Selection Switcher -->
             <div class="lang-switcher">
                 <a href="/set_language/en" class="lang-btn {% if current_lang == 'en' %}active{% endif %}">EN</a>

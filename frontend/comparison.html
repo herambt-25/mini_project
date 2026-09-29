@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 30px; text-align: center;">
+    <h2>Compare Schemes</h2>
+    <p>Select two government schemes to see their factual differences side-by-side.</p>
+</div>
+
+<!-- Selection Form -->
+<div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
+    <form action="/compare" method="GET" style="display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap;">
+        
+        <div style="flex: 1; min-width: 250px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Scheme 1</label>
+            <select name="scheme1" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="">-- Select First Scheme --</option>
+                {% for s in all_schemes %}
+                    <option value="{{ s.id }}" {% if sel_id1 == s.id %}selected{% endif %}>{{ s.name_en }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="flex: 1; min-width: 250px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Scheme 2</label>
+            <select name="scheme2" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="">-- Select Second Scheme --</option>
+                {% for s in all_schemes %}
+                    <option value="{{ s.id }}" {% if sel_id2 == s.id %}selected{% endif %}>{{ s.name_en }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" style="padding: 10px 20px; background-color: var(--primary-color, #004d99); color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
+            Compare
+        </button>
+    </form>
+</div>
+
+<!-- Comparison Table -->
+{% if scheme1 and scheme2 %}
+<div style="overflow-x: auto; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        
+        <thead>
+            <tr style="background-color: var(--primary-color, #004d99); color: white;">
+                <th style="padding: 15px; border-bottom: 2px solid #ddd; width: 20%;">Attribute</th>
+                <th style="padding: 15px; border-bottom: 2px solid #ddd; width: 40%;">{{ scheme1.name_en }}</th>
+                <th style="padding: 15px; border-bottom: 2px solid #ddd; width: 40%;">{{ scheme2.name_en }}</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 15px; font-weight: bold; background-color: #f8f9fa;">Category</td>
+                <td style="padding: 15px;">{{ scheme1.category }}</td>
+                <td style="padding: 15px;">{{ scheme2.category }}</td>
+            </tr>
+            
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 15px; font-weight: bold; background-color: #f8f9fa;">Ministry</td>
+                <td style="padding: 15px;">{{ scheme1.ministry }}</td>
+                <td style="padding: 15px;">{{ scheme2.ministry }}</td>
+            </tr>
+
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 15px; font-weight: bold; background-color: #f8f9fa;">State</td>
+                <td style="padding: 15px;">{{ scheme1.state_applicability }}</td>
+                <td style="padding: 15px;">{{ scheme2.state_applicability }}</td>
+            </tr>
+
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 15px; font-weight: bold; background-color: #f8f9fa;">Age Requirement</td>
+                <td style="padding: 15px;">{{ scheme1.min_age }} to {{ scheme1.max_age }} years</td>
+                <td style="padding: 15px;">{{ scheme2.min_age }} to {{ scheme2.max_age }} years</td>
+            </tr>
+
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 15px; font-weight: bold; background-color: #f8f9fa;">Income Limit</td>
+                <td style="padding: 15px;">
+                    {% if scheme1.max_income == 0 %}No Limit{% else %}₹{{ scheme1.max_income }}{% endif %}
+                </td>
+                <td style="padding: 15px;">
+                    {% if scheme2.max_income == 0 %}No Limit{% else %}₹{{ scheme2.max_income }}{% endif %}
+                </td>
+            </tr>
+
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 15px; font-weight: bold; background-color: #f8f9fa;">Target Audience</td>
+                <td style="padding: 15px;">{{ scheme1.target_gender }} / {{ scheme1.target_occupation }}</td>
+                <td style="padding: 15px;">{{ scheme2.target_gender }} / {{ scheme2.target_occupation }}</td>
+            </tr>
+
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 15px; font-weight: bold; background-color: #f8f9fa;">Benefits</td>
+                <td style="padding: 15px; background-color: var(--accent-color, #e6f2ff);">{{ scheme1.benefits_en }}</td>
+                <td style="padding: 15px; background-color: var(--accent-color, #e6f2ff);">{{ scheme2.benefits_en }}</td>
+            </tr>
+            
+            <tr>
+                <td style="padding: 15px; font-weight: bold; background-color: #f8f9fa;">Action</td>
+                <td style="padding: 15px;">
+                    <a href="{{ scheme1.official_source }}" target="_blank" style="color: #28a745; font-weight: bold; text-decoration: none;">Apply Here &rarr;</a>
+                </td>
+                <td style="padding: 15px;">
+                    <a href="{{ scheme2.official_source }}" target="_blank" style="color: #28a745; font-weight: bold; text-decoration: none;">Apply Here &rarr;</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

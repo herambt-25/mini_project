@@ -5,6 +5,7 @@ from routes.profile import profile_bp
 from routes.eligibility_routes import eligibility_bp
 from routes.scheme_routes import scheme_bp
 from services.translation import translate
+from routes.admin import admin_bp
 
 ROOT_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 FRONTEND_DIR = os.path.join(ROOT_DIR, 'frontend')
@@ -16,6 +17,7 @@ app.config.from_object(config.Config)
 app.register_blueprint(profile_bp)
 app.register_blueprint(eligibility_bp)
 app.register_blueprint(scheme_bp)
+app.register_blueprint(admin_bp)
 
 # Context processor makes t() available in EVERY Jinja HTML template automatically
 @app.context_processor

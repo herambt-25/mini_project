@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eligibility Report - {{ user.name }}</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e9ecef; margin: 0; padding: 20px; color: #333; }
+        
+        /* The Report "Paper" Container */
+        .report-container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        
+        h1, h2, h3 { color: #004d99; }
+        .header { text-align: center; border-bottom: 2px solid #004d99; padding-bottom: 20px; margin-bottom: 30px; }
+        
+        /* Profile Grid */
+        .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 30px; }
+        
+        .scheme-item { border-left: 4px solid; padding: 15px; margin-bottom: 15px; background: #fff; border: 1px solid #eee; }
+        .eligible { border-left-color: #28a745; }
+        .ineligible { border-left-color: #dc3545; }
+        
+        /* Hidden when printing */
+        @media print {
+            body { background: white; padding: 0; }
+            .report-container { box-shadow: none; max-width: 100%; padding: 0; }
+            .no-print { display: none !important; }
+        }
+        
+        .btn-print { background: #004d99; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-bottom: 20px; display: block; width: 100%; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <!-- Print / Save PDF Button -->
+    <div style="max-width: 800px; margin: 0 auto;">
+        <button class="btn-print no-print" onclick="window.print()">🖨️ Print or Save as PDF</button>
+        <a href="/dashboard" class="no-print" style="display: block; text-align: center; margin-bottom: 20px; color: #004d99; text-decoration: none;">&larr; Back to Dashboard</a>
+    </div>
+
+    <!-- The actual report document -->
+    <div class="report-container">
+        
+        <div class="header">
+            <h1>Official Eligibility Report</h1>
+            <p>Smart Government Scheme System</p>
+            <p><strong>Date Generated:</strong> <script>document.write(new Date().toLocaleDateString());</script></p>
+        </div>
+
+        <h2>User Profile Summary</h2>
+        <div class="profile-grid">
+            <div><strong>Name:</strong> {{ user.name }}</div>
+            <div><strong>Age:</strong> {{ user.age }}</div>
+            <div><strong>Gender:</strong> {{ user.gender }}</div>
+            <div><strong>State:</strong> {{ user.state }}</div>
+            <div><strong>Annual Income:</strong> ₹{{ "{:,.0f}".format(user.annual_income) }}</div>
+            <div><strong>Occupation:</strong> {{ user.occupation }}</div>
+        </div>
+
+        <h2>✅ Eligible Schemes ({{ eligible_schemes|length }})</h2>
+        {% for item in eligible_schemes %}
+        <div class="scheme-item eligible">
+            <h3 style="margin-top: 0; color: #28a745;">{{ item.scheme.name_en }} ({{ item.scheme.category }})</h3>
+            <p><strong>Benefits:</strong> {{ item.scheme.benefits_en }}</p>
+            <p style="margin-bottom: 5px;"><strong>Why Eligible:</strong></p>
+            <ul style="margin-top: 0; font-size: 14px; color: #555;">
+                {% for reason in item.reasons %}
+                    <li>{{ reason }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <p>No eligible schemes found based on current profile.</p>
+        {% endfor %}
+
+        <h2>❌ Non-Eligible Schemes ({{ ineligible_schemes|length }})</h2>
+        {% for item in ineligible_schemes %}
+        <div class="scheme-item ineligible">
+            <h3 style="margin-top: 0; color: #dc3545;">{{ item.scheme.name_en }}</h3>
+            <p style="margin-bottom: 5px;"><strong>Reasons for Rejection:</strong></p>
+            <ul style="margin-top: 0; font-size: 14px; color: #dc3545;">
+                {% for reason in item.reasons %}
+                    {% if '✗' in reason %}
+                        <li><strong>{{ reason }}</strong></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</body>
+</html>

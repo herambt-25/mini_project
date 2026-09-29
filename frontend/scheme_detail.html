@@ -3,38 +3,91 @@
 {% block content %}
 <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
     
-    <a href="/schemes" style="color: #004d99; text-decoration: none;">&larr; Back to all schemes</a>
+    <a href="/schemes" style="color: var(--primary-color, #004d99); text-decoration: none;">&larr; {{ t('back_to_schemes') }}</a>
     
-    <h2 style="color: #004d99; margin-top: 20px;">{{ scheme.name_en }}</h2>
+    <h2 style="color: var(--primary-color, #004d99); margin-top: 20px;">{{ scheme.name_en }}</h2>
     <p style="font-size: 16px; color: #555;">{{ scheme.description_en }}</p>
     
-    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
-        <h4 style="margin-top: 0;">Eligibility Criteria</h4>
-        <ul style="line-height: 1.8;">
-            <li><strong>Age Requirement:</strong> {{ scheme.min_age }} to {{ scheme.max_age }} years</li>
-            <li><strong>Income Limit:</strong> {% if scheme.max_income == 0 %}No limit{% else %}Up to ₹{{ scheme.max_income }}{% endif %}</li>
-            <li><strong>State:</strong> {{ scheme.state_applicability }}</li>
-            <li><strong>Target Gender:</strong> {{ scheme.target_gender }}</li>
-            <li><strong>Target Occupation:</strong> {{ scheme.target_occupation }}</li>
-        </ul>
+    <!-- ANNUAL BENEFIT CALCULATOR -->
+    {% if annual_benefit %}
+    <div style="background-color: #d4edda; border-left: 5px solid #28a745; padding: 15px; border-radius: 4px; margin: 20px 0;">
+        <h4 style="margin: 0; color: #155724;">💰 Estimated Annual Benefit</h4>
+        <p style="margin: 5px 0 0 0; font-size: 20px; font-weight: bold; color: #155724;">₹{{ "{:,.0f}".format(annual_benefit) }} / year</p>
+        <small style="color: #666;">(Calculated based on official monthly monetary benefits)</small>
+    </div>
+    {% endif %}
+
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0;">
+        
+        <!-- ELIGIBILITY RULES -->
+        <div style="flex: 1; min-width: 250px; background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
+            <h4 style="margin-top: 0;">Eligibility Criteria</h4>
+            <ul style="line-height: 1.8;">
+                <li><strong>Age:</strong> {{ scheme.min_age }} to {{ scheme.max_age }} years</li>
+                <li><strong>Income Limit:</strong> {% if scheme.max_income == 0 %}No limit{% else %}Up to ₹{{ scheme.max_income }}{% endif %}</li>
+                <li><strong>State:</strong> {{ scheme.state_applicability }}</li>
+                <li><strong>Gender:</strong> {{ scheme.target_gender }}</li>
+                <li><strong>Occupation:</strong> {{ scheme.target_occupation }}</li>
+            </ul>
+        </div>
+
+        <!-- DOCUMENT CHECKLIST (INTERACTIVE) -->
+        <div style="flex: 1; min-width: 250px; background-color: var(--accent-color, #e6f2ff); padding: 15px; border-radius: 5px;">
+            <h4 style="margin-top: 0; color: var(--primary-color, #004d99);">Required Documents</h4>
+            
+            <div id="doc-list" style="margin-bottom: 15px;">
+                {% for doc in documents %}
+                <label style="display: block; margin-bottom: 8px; cursor: pointer;">
+                    <input type="checkbox" class="doc-checkbox" onchange="updateProgress()" style="margin-right: 10px; transform: scale(1.2);">
+                    {{ doc.document_name_en }}
+                </label>
+                {% else %}
+                <p>No specific documents listed.</p>
+                {% endfor %}
+            </div>
+
+            {% if documents %}
+            <div style="background: rgba(255,255,255,0.7); padding: 10px; border-radius: 4px; font-weight: bold;">
+                Status: <span id="ready-count" style="color: #dc3545;">0</span> / {{ documents|length }} Documents Ready
+            </div>
+            {% endif %}
+        </div>
     </div>
 
     <div style="margin: 20px 0;">
-        <h4>Benefits</h4>
-        <p style="background-color: #e6f2ff; padding: 15px; border-left: 4px solid #004d99; border-radius: 4px;">
+        <h4>Benefits Description</h4>
+        <p style="padding: 10px 0; border-bottom: 1px solid #eee;">
             {{ scheme.benefits_en }}
         </p>
     </div>
-
-    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
     
     <p><strong>Ministry/Department:</strong> {{ scheme.ministry }}</p>
     
     <div style="margin-top: 30px;">
         <a href="{{ scheme.official_source }}" target="_blank" style="background-color: #28a745; color: white; text-decoration: none; padding: 12px 24px; border-radius: 5px; font-weight: bold;">
-            Visit Official Website
+            {{ t('official_website') }}
         </a>
     </div>
 
 </div>
+
+<!-- Vanilla JS for the Progress Tracker -->
+<script>
+    function updateProgress() {
+        // Count how many checkboxes are currently checked
+        const checkedBoxes = document.querySelectorAll('.doc-checkbox:checked').length;
+        const totalBoxes = document.querySelectorAll('.doc-checkbox').length;
+        const counterSpan = document.getElementById('ready-count');
+        
+        // Update the number
+        counterSpan.innerText = checkedBoxes;
+        
+        // Change color to green if all are ready, else keep it red/orange
+        if (checkedBoxes === totalBoxes) {
+            counterSpan.style.color = '#28a745'; // Green
+        } else {
+            counterSpan.style.color = '#dc3545'; // Red
+        }
+    }
+</script>
 {% endblock %}

@@ -51,3 +51,14 @@ CREATE TABLE admins (
     username TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL
 );
+
+-- Search History Table
+CREATE TABLE IF NOT EXISTS search_history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    search_query TEXT,
+    category_filter TEXT,
+    state_filter TEXT,
+    search_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);

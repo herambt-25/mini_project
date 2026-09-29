@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 20px; text-align: center;">
+    <h2 style="color: var(--primary-color, #004d99);">Eligibility Simulator</h2>
+    <p style="color: #666;">Adjust the parameters below to see how your scheme eligibility changes dynamically.</p>
+</div>
+
+<div style="display: flex; gap: 30px; flex-wrap: wrap;">
+    
+    <!-- LEFT PANEL: The Simulator Controls -->
+    <div style="flex: 1; min-width: 300px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); align-self: flex-start;">
+        <h3 style="margin-top: 0; color: #333;">Test Variables</h3>
+        
+        <form action="/simulator" method="GET">
+            
+            <!-- Age Slider -->
+            <div style="margin-bottom: 20px;">
+                <label style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px;">
+                    Age <span id="age-display" style="color: var(--primary-color);">{{ mock_user.age }} years</span>
+                </label>
+                <input type="range" name="age" min="1" max="100" value="{{ mock_user.age }}" 
+                       oninput="document.getElementById('age-display').innerText = this.value + ' years'"
+                       style="width: 100%; cursor: pointer;">
+            </div>
+
+            <!-- Income Slider -->
+            <div style="margin-bottom: 25px;">
+                <label style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px;">
+                    Annual Income <span id="income-display" style="color: #28a745;">₹{{ "{:,.0f}".format(mock_user.annual_income) }}</span>
+                </label>
+                <input type="range" name="income" min="0" max="1000000" step="10000" value="{{ mock_user.annual_income }}" 
+                       oninput="document.getElementById('income-display').innerText = '₹' + parseInt(this.value).toLocaleString('en-IN')"
+                       style="width: 100%; cursor: pointer;">
+            </div>
+
+            <!-- Dropdowns -->
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Gender</label>
+                <select name="gender" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="Male" {% if mock_user.gender == 'Male' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if mock_user.gender == 'Female' %}selected{% endif %}>Female</option>
+                    <option value="Other" {% if mock_user.gender == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 5px;">State</label>
+                <input type="text" name="state" value="{{ mock_user.state }}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Occupation</label>
+                <select name="occupation" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="Student" {% if mock_user.occupation == 'Student' %}selected{% endif %}>Student</option>
+                    <option value="Farmer" {% if mock_user.occupation == 'Farmer' %}selected{% endif %}>Farmer</option>
+                    <option value="Street Vendor" {% if mock_user.occupation == 'Street Vendor' %}selected{% endif %}>Street Vendor</option>
+                    <option value="Artisan" {% if mock_user.occupation == 'Artisan' %}selected{% endif %}>Artisan</option>
+                    <option value="Unemployed" {% if mock_user.occupation == 'Unemployed' %}selected{% endif %}>Unemployed</option>
+                    <option value="Other" {% if mock_user.occupation == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+
+            <button type="submit" style="width: 100%; padding: 12px; background-color: var(--primary-color, #004d99); color: white; border: none; border-radius: 5px; font-weight: bold; font-size: 16px; cursor: pointer;">
+                Run Simulation
+            </button>
+        </form>
+    </div>
+
+    <!-- RIGHT PANEL: Live Results -->
+    <div style="flex: 2; min-width: 300px;">
+        
+        <div style="background-color: var(--primary-color, #004d99); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h3 style="margin: 0; font-size: 24px;">Matches Found: {{ eligible_schemes|length }}</h3>
+            <p style="margin: 5px 0 0 0; opacity: 0.9;">Based on simulated profile data.</p>
+        </div>
+
+        {% if eligible_schemes %}
+            <div style="display: grid; gap: 15px;">
+            {% for item in eligible_schemes %}
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #28a745; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <h4 style="margin: 0 0 5px 0; color: #333;">{{ item.scheme.name_en }}</h4>
+                    <p style="margin: 0; font-size: 13px; color: #666;"><strong>Category:</strong> {{ item.scheme.category }} | <strong>Max Income:</strong> {% if item.scheme.max_income == 0 %}No limit{% else %}₹{{ "{:,.0f}".format(item.scheme.max_income) }}{% endif %}</p>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div style="background: white; padding: 40px; text-align: center; border-radius: 8px; border: 1px dashed #ccc;">
+                <p style="color: #666; font-size: 16px;">Zero schemes match these exact variables.</p>
+                <p style="color: #999; font-size: 14px;">Try lowering the income or changing the occupation.</p>
+            </div>
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}
